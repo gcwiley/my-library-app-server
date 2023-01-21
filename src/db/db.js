@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 import process from 'process';
+import * as dotenv from 'dotenv';
+
+// load environmental variables
+dotenv.config();
 
 // opens Mongoose's default connection to MongoDB
 // connection method returns a promise

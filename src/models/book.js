@@ -53,5 +53,5 @@ const bookSchema = new Schema(
 // Create the book model
 const Book = mongoose.model('Book', bookSchema);
 
-// export the model
+// export the book model
 export { Book };

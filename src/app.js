@@ -16,12 +16,13 @@ initializeApp({
   credential: applicationDefault(),
 });
 
-// import the database connection
+// import the database connection file
+// this will connect to the database
 import './db/db.js';
 
 // Import Routes
 import { bookRouter } from './routes/book.js';
-import { commentRouter } from './routes/comment.js';
+import { issueRouter } from './routes/issue.js';
 
 // create express app by executing express package
 const app = express();
@@ -42,7 +43,7 @@ app.use(logger('dev'));
 
 // register the routers
 app.use(bookRouter);
-app.use(commentRouter);
+app.use(issueRouter);
 
 // handle all other routes with angular app - returns angular app
 app.use('*', (req, res) => {
@@ -52,5 +53,5 @@ app.use('*', (req, res) => {
 
 // start the server on the specified port
 app.listen(PORT, () => {
-  console.log('Server Started');
+  console.log(`Successfully started server running on port ${PORT}`);
 });

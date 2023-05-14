@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const commentSchema = new Schema(
+// create the issue schema
+const issueSchema = new Schema(
   {
     title: {
       type: String,
@@ -26,8 +27,8 @@ const commentSchema = new Schema(
   }
 );
 
-// create the Comment Model
-const Comment = mongoose.model('Comment', commentSchema);
+// create the issue model
+const Issue = mongoose.model('Issue', issueSchema);
 
-// export the model
-export { Comment };
+// export the issue model
+export { Issue };

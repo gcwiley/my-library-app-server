@@ -14,6 +14,7 @@ export const newBook = async (req, res) => {
 };
 
 // fetch all books from database - GET ALL BOOKS
+// GET /api/books
 export const getBooks = async (req, res) => {
   try {
     const books = await Book.find({});

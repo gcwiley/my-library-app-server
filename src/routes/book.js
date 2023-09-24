@@ -1,6 +1,6 @@
 import express from 'express';
 
-// Define a new router
+// define a new router
 const router = new express.Router();
 
 import {
@@ -13,13 +13,13 @@ import {
   getRecentlyCreatedBooks,
 } from '../controllers/book.js';
 
-// Route handler to create a new book - NEW BOOK
+// route handler to create a new book - NEW BOOK
 router.post('/api/books', newBook);
 
-// Route handler for fetching all books - GET ALL BOOKS
+// route handler for fetching all books - GET ALL BOOKS
 router.get('/api/books', getBooks);
 
-// Route handler to fetch individual book by Id
+// route handler to fetch individual book by Id
 router.get('/api/books/:id', getBookById);
 
 // Route handler to update an existing book - UPDATE BOOK

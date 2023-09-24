@@ -10,13 +10,12 @@ const bookSchema = new Schema(
       trim: true,
     },
     author: {
-      type: Schema.Types.ObjectId,
-      ref: 'Author',
+      type: String,
       required: true,
       trim: true,
     },
     isbn: {
-      type: Number,
+      type: String,
       required: true,
       trim: true,
     },
@@ -35,8 +34,7 @@ const bookSchema = new Schema(
       },
     },
     genre: {
-      type: Schema.Types.ObjectId,
-      ref: 'Genre',
+      type: String,
       required: true,
     },
     summary: {
@@ -50,7 +48,7 @@ const bookSchema = new Schema(
   }
 );
 
-// Create the book model
+// create the book model
 const Book = mongoose.model('Book', bookSchema);
 
 // export the book model

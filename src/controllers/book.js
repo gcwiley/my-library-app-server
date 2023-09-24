@@ -5,6 +5,8 @@ import { Book } from '../models/book.js';
 export const newBook = async (req, res) => {
   const book = new Book(req.body);
 
+  console.log(book);
+
   try {
     await book.save();
     res.status(201).send(book);

@@ -21,6 +21,7 @@ import './db/db.js';
 
 // import routes
 import { bookRouter } from './routes/book.js';
+import { issueRouter } from './routes/issue.js';
 
 // create express app by executing express package
 const app = express();
@@ -41,6 +42,7 @@ app.use(logger('dev'));
 
 // register the routers
 app.use(bookRouter);
+app.use(issueRouter);
 
 // handle all other routes with angular app - returns angular app
 app.use('*', (req, res) => {

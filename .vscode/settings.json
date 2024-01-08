@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/fd6148f2-a2b1-4370-b1aa-aa659477fc4b/resourceGroups/Web-Apps/providers/Microsoft.Web/sites/my-library-app-wiley",
+    "appService.deploySubpath": "."
+}

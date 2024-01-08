@@ -1,11 +1,9 @@
-// Import the Book Model
+// import book model
 import { Book } from '../models/book.js';
 
 // Route handler to create a new book - NEW BOOK
 export const newBook = async (req, res) => {
   const book = new Book(req.body);
-
-  console.log(book);
 
   try {
     await book.save();
@@ -58,7 +56,7 @@ export const updateBook = async (req, res) => {
       runValidators: true,
     });
 
-    // if no book is found
+    // if no book is found - send 404 error msg
     if (!book) {
       return res.status(404).send();
     }

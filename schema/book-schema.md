@@ -1,29 +1,35 @@
 1. ID (_id)
-    - number
+    - Data Type = string
 
 2. Title (title)
-    - String
+    - Data Type = string
 
 3. Author (author)
-    - String
+    - Data Type = string
 
 4. ISBN (isbn)
-    - Number    
+    - Data Type = string    
 
 5. Publication Date (publicationDate)
-    - Date
+    - Data Type = string
 
 6. Page Count (pageCount)
-    - Number
+    - Data Type = string
 
 7. Genre (genre)
-    - String
+    - Data Type = string
 
-8. Summary (summary)
-    - String
+8. Favorite Book (favoriteBook)
+    - Data Type = Boolean
 
-9. created At (createdAt)
-    - String
+9. Summary (summary)
+    - Data Type = string
 
-10. updated At (updatedAt)
-    - String
+10. Cover Image Url (coverImageUrl)
+    - Data Type = string
+
+11. created At (createdAt)
+    - Data Type = string
+
+12. updated At (updatedAt)
+    - Data Type = string

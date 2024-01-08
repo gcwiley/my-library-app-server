@@ -8,16 +8,18 @@ const authorSchema = new Schema({
     required: true,
     maxlength: 100,
   },
-  familyName: {
+  lastName: {
     type: String,
     required: true,
     maxlength: 100,
   },
   dateOfBirth: {
     type: Date,
+    required: true,
   },
   dateOfDeath: {
     type: Date,
+    required: true,
   },
 });
 

@@ -15,9 +15,11 @@ const bookSchema = new Schema(
       trim: true,
     },
     isbn: {
-      type: String,
+      type: Number,
       required: true,
       trim: true,
+      minlength: 8,
+      maxlength: 8,
     },
     publicationDate: {
       type: Date,
@@ -37,10 +39,18 @@ const bookSchema = new Schema(
       type: String,
       required: true,
     },
+    favoriteBook: {
+      type: Boolean,
+      default: false,
+    },
     summary: {
       type: String,
       required: true,
       trim: true,
+    },
+    coverImageUrl: {
+      type: String,
+      required: true,
     },
   },
   {

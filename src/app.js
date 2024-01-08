@@ -16,10 +16,13 @@ initializeApp({
   credential: applicationDefault(),
 });
 
-// import the database connection file
-import './db/db.js';
+// initilizie the database connection file
+import { connect } from './db/connect.js';
 
-// import routes
+// connect to the mongo database
+connect();
+
+// import the routes
 import { bookRouter } from './routes/book.js';
 import { issueRouter } from './routes/issue.js';
 
@@ -27,7 +30,7 @@ import { issueRouter } from './routes/issue.js';
 const app = express();
 
 // get the port from the environment variable or use 8080
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // allows static access to the angular client side folder
 app.use(express.static(path.join(__dirname, '/dist/my-library-app-client')));

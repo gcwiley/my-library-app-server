@@ -3,7 +3,10 @@ import { BlobServiceClient, StorageSharedKeyCredential, newPipeline } from '@azu
 import * as dotenv from 'dotenv';
 
 // load environmental variables from .env file into process.env
-dotenv.config();
+dotenv.config({
+  path: '/Users/gregwiley/Desktop/gregwiley-dev/gregwiley-dev-server/.env',
+  debug: true,
+});
 
 // get the account name and access key from the environment variables
 // and create a shared key credential object to be used to create a pipeline
@@ -12,8 +15,7 @@ const sharedKeyCredential = new StorageSharedKeyCredential(
   process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY
 );
 
-// create a new pipeline with the shared key credential
-// and use it to create a new blob service client
+// Creates a new Pipeline object with Credential provided.
 const pipeline = newPipeline(sharedKeyCredential);
 
 // create the blog service client with the pipeline
@@ -22,5 +24,5 @@ const blobServiceClient = new BlobServiceClient(
   pipeline
 );
 
-// export the blog service client so it can be used in other files
+// export the function
 export { blobServiceClient };

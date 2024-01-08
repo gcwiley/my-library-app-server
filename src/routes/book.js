@@ -13,7 +13,7 @@ import {
   getRecentlyCreatedBooks,
 } from '../controllers/book.js';
 
-// route handler to create a new book - NEW BOOK
+// route handler to create a new book - ADD NEW BOOK
 router.post('/api/books', newBook);
 
 // route handler for fetching all books - GET ALL BOOKS
@@ -28,7 +28,7 @@ router.patch('/api/books/:id', updateBook);
 // Route handler to delete a book by ID - DELETE BOOK
 router.delete('/api/books/:id', deleteBook);
 
-// Route handler to count all books in database - COUNT BOOKS
+// Route handler to count all books in database - COUNT # OF BOOKS
 router.get('/api/book-count', getBookCount);
 
 // Route handler to get the last 5 books created - LAST 5 BOOKS

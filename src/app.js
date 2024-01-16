@@ -1,15 +1,20 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
 import process from 'process';
-import express from 'express';
-import logger from 'morgan';
-import { applicationDefault, initializeApp } from 'firebase-admin/app';
+import { fileURLToPath } from 'url';
 
 // get the current file name
 const __filename = fileURLToPath(import.meta.url);
-
 // get the directory name of the current file
 const __dirname = path.dirname(__filename);
+
+import express from 'express';
+import logger from 'morgan';
+
+import { applicationDefault, initializeApp } from 'firebase-admin/app';
+
+// import the routers
+import { bookRouter } from './routes/book.js';
+import { issueRouter } from './routes/issue.js';
 
 // Initialize the Firebase SDK
 initializeApp({
@@ -21,10 +26,6 @@ import { connect } from './db/connect.js';
 
 // connect to the mongo database
 connect();
-
-// import the routes
-import { bookRouter } from './routes/book.js';
-import { issueRouter } from './routes/issue.js';
 
 // create express app by executing express package
 const app = express();
@@ -55,5 +56,5 @@ app.use('*', (req, res) => {
 
 // start the server on the specified port
 app.listen(PORT, () => {
-  console.log(`Successfully started server running on port ${PORT}`);
+  console.log(`Successfully started web application running on port: ${PORT}`);
 });

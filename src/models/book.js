@@ -22,7 +22,7 @@ const bookSchema = new Schema(
       maxlength: 8,
     },
     publicationDate: {
-      type: Date,
+      type: String,
       required: true,
     },
     pageCount: {
@@ -50,7 +50,10 @@ const bookSchema = new Schema(
     },
     coverImageUrl: {
       type: String,
-      required: true,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
     },
   },
   {

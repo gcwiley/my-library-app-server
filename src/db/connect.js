@@ -1,10 +1,11 @@
+import path from 'path';
 import mongoose from 'mongoose';
 import process from 'process';
 import * as dotenv from 'dotenv';
 
 // load the environment variables
 dotenv.config({
-  path: '/Users/gregwiley/Desktop/gregwiley-dev/gregwiley-dev-server/.env',
+  path: path.resolve(process.cwd(), '../../.env'),
   debug: true,
 });
 
@@ -18,10 +19,9 @@ async function connect() {
   try {
     // opens mongoose's default connection to mongodb
     await mongoose.connect(uri, { dbName: dbName });
-    await mongoose.set('strictQuery', false);
     console.log(`Successfully connected to the database - ${dbName}`);
   } catch (error) {
-    console.error(`Unable to connect to the database ${error}`);
+    console.error('\n', `Unable to connect to the database ${error}`, '\n');
   }
 }
 

@@ -14,18 +14,18 @@ export const newBook = async (req, res) => {
 };
 
 // fetch all books from database - GET ALL BOOKS
-// GET /api/books
 export const getBooks = async (req, res) => {
   try {
     const books = await Book.find({});
 
+    // if no books are found
     if (!books) {
-      return res.status(404).send();
+      return res.status(404).send('No books found.');
     }
 
     res.send(books);
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send('An Error Occurred.');
   }
 };
 
@@ -37,8 +37,9 @@ export const getBookById = async (req, res) => {
     // filters by _id
     const book = await Book.findById({ _id });
 
+    // if no book by ID is found
     if (!book) {
-      return res.status(404).send();
+      return res.status(404).send('No book found');
     }
 
     res.send(book);

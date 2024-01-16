@@ -1,10 +1,11 @@
+import path from 'node:path';
 import process from 'process';
 import { BlobServiceClient, StorageSharedKeyCredential, newPipeline } from '@azure/storage-blob';
 import * as dotenv from 'dotenv';
 
 // load environmental variables from .env file into process.env
 dotenv.config({
-  path: '/Users/gregwiley/Desktop/gregwiley-dev/gregwiley-dev-server/.env',
+  path: path.resolve(process.cwd(), '.env'),
   debug: true,
 });
 

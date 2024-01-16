@@ -34,5 +34,5 @@ router.get('/api/book-count', getBookCount);
 // Route handler to get the last 5 books created - LAST 5 BOOKS
 router.get('/api/recent-books', getRecentlyCreatedBooks);
 
-// export the router
+// export the book router
 export { router as bookRouter };

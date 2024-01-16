@@ -1,11 +1,11 @@
-import path from 'path';
+// import path from 'path';
 import mongoose from 'mongoose';
 import process from 'process';
 import * as dotenv from 'dotenv';
 
 // load the environment variables
 dotenv.config({
-  path: path.resolve(process.cwd(), '../../.env'),
+  path: '../../.env', // FIX THIS!
   debug: true,
 });
 

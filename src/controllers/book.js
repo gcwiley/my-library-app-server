@@ -59,7 +59,7 @@ export const updateBook = async (req, res) => {
 
     // if no book is found - send 404 error msg
     if (!book) {
-      return res.status(404).send();
+      return res.status(404).send('No book found.');
     }
 
     // send updated book back to client
@@ -77,8 +77,9 @@ export const deleteBook = async (req, res) => {
       _id: req.params.id,
     });
 
+    // if no book is found
     if (!book) {
-      res.status(404).send();
+      res.status(404).send('No book found.');
     }
     res.send(book);
   } catch (error) {
@@ -94,7 +95,7 @@ export const getBookCount = async (req, res) => {
 
     res.send(bookCount);
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send(error);
   }
 };
 
@@ -108,6 +109,6 @@ export const getRecentlyCreatedBooks = async (req, res) => {
     }
     res.send(mostRecentBooks);
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send(error);
   }
 };

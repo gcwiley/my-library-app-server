@@ -19,7 +19,7 @@ export const getIssues = async (req, res) => {
 
     // if no issues are found
     if (!issues) {
-      return res.status(404).send();
+      return res.status(404).send('No issues found');
     }
 
     res.send(issues);

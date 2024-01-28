@@ -5,6 +5,8 @@ import { Book } from '../models/book.js';
 export const newBook = async (req, res) => {
   const book = new Book(req.body);
 
+  console.log(book);
+
   try {
     await book.save();
     res.status(201).send(book);
@@ -25,7 +27,7 @@ export const getBooks = async (req, res) => {
 
     res.send(books);
   } catch (error) {
-    res.status(500).send('An Error Occurred.');
+    res.status(500).send('An error on the server occurred.');
   }
 };
 
@@ -83,7 +85,7 @@ export const deleteBook = async (req, res) => {
     }
     res.send(book);
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send('An error on the server occurred.');
   }
 };
 

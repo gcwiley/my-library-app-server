@@ -1,6 +1,7 @@
 import path from 'node:path';
 import process from 'process';
 import { fileURLToPath } from 'url';
+import chalk from 'chalk';
 
 // get the current file name
 const __filename = fileURLToPath(import.meta.url);
@@ -31,7 +32,7 @@ connect();
 const app = express();
 
 // get the port from the environment variable or use 8080
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 // allows static access to the angular client side folder
 app.use(express.static(path.join(__dirname, '/dist/my-library-app-client')));
@@ -55,6 +56,6 @@ app.use('*', (req, res) => {
 });
 
 // start the server on the specified port
-app.listen(PORT, () => {
-  console.log(`Successfully started web application running on port: ${PORT}`);
+app.listen(port, () => {
+  console.log(chalk.green(`Successfully started web application running on port: ${port}`));
 });

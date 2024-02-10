@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 // create the author schema
 const authorSchema = new Schema({

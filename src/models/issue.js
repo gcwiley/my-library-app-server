@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 // create the issue schema
 const issueSchema = new Schema(

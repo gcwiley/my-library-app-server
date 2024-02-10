@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 // create the book schema
 const bookSchema = new Schema(
@@ -17,7 +17,6 @@ const bookSchema = new Schema(
     isbn: {
       type: Number,
       required: true,
-      trim: true,
       minlength: 8,
       maxlength: 8,
     },
@@ -26,7 +25,7 @@ const bookSchema = new Schema(
       required: true,
     },
     pageCount: {
-      type: String,
+      type: Number,
       required: true,
       default: 0,
       validate(value) {
@@ -39,21 +38,12 @@ const bookSchema = new Schema(
       type: String,
       required: true,
     },
-    favoriteBook: {
+    favorite: {
       type: Boolean,
       default: false,
     },
     summary: {
       type: String,
-      required: true,
-      trim: true,
-    },
-    coverImageUrl: {
-      type: String,
-    },
-    favorite: {
-      type: Boolean,
-      default: false,
     },
   },
   {

@@ -1,17 +1,19 @@
-// import book model
+import chalk from 'chalk';
+// import the book model
 import { Book } from '../models/book.js';
 
 // Route handler to create a new book - NEW BOOK
 export const newBook = async (req, res) => {
   const book = new Book(req.body);
 
-  console.log(book);
-
   try {
+    // saves book to database
     await book.save();
     res.status(201).send(book);
   } catch (error) {
     res.status(400).send(error);
+    // logs any errors to the console
+    console.log(chalk.red(error));
   }
 };
 
@@ -52,6 +54,7 @@ export const getBookById = async (req, res) => {
 
 // Update a book by Id
 export const updateBook = async (req, res) => {
+  // get the id from params
   const _id = req.params.id;
   try {
     const book = await Book.findByIdAndUpdate(_id, req.body, {

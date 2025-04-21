@@ -2,6 +2,7 @@ import path from 'node:path';
 import process from 'process';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
+import admin from 'firebase-admin';
 
 // get the current file name
 const __filename = fileURLToPath(import.meta.url);
@@ -11,35 +12,31 @@ const __dirname = path.dirname(__filename);
 import express from 'express';
 import logger from 'morgan';
 
-import { applicationDefault, initializeApp } from 'firebase-admin/app';
+// import the credentials
+import { serviceAccount } from '../credentials/service-account.js';
+
+// initialize the firebase SDK
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 // import the routers
 import { bookRouter } from './routes/book.js';
-import { issueRouter } from './routes/issue.js';
 
-// Initialize the Firebase SDK
-initializeApp({
-  credential: applicationDefault(),
-});
-
-// initilizie the database connection file
+// initialize the database connection function
 import { connect } from './db/connect.js';
 
-// connect to the mongo database
-connect();
-
-// create express app by executing express package
+// create an express application
 const app = express();
 
-// get the port from the environment variable or use 8080
+// set up port
 const port = process.env.PORT || 3000;
 
 // allows static access to the angular client side folder
-app.use(express.static(path.join(__dirname, '/dist/my-library-app-client')));
+app.use(express.static(path.join(__dirname, '/dist/my-library-app-client/browser')));
 
 // automatically parse incoming JSON to an object so we can access it in our request handlers
 app.use(express.json());
-// automatically parse incoming urlencoded payloads to an object so we can access it in our request handlers
 app.use(express.urlencoded({ extended: true }));
 
 // creates a logger middleware
@@ -47,15 +44,39 @@ app.use(logger('dev'));
 
 // register the routers
 app.use(bookRouter);
-app.use(issueRouter);
 
-// handle all other routes with angular app - returns angular app
+// handle all other routes with angular app - returns angular app - catch all route
 app.use('*', (req, res) => {
+  // check if its an API request
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Not Found' }); // return 404 for API requests
+  }
   // send back the angular index.html file
-  res.sendFile(path.join(__dirname, './dist/my-library-app-client', 'index.html'));
+  res.sendFile(path.join(__dirname, './dist/my-library-app-client/browser', 'index.html'));
 });
 
-// start the server on the specified port
-app.listen(port, () => {
-  console.log(chalk.green(`Successfully started web application running on port: ${port}`));
+// global error handling middleware
+app.use((error, req, res, next) => {
+  console.error(chalk.red('Unhandled error:', error));
+  res.status(500).json({ error: 'Internal Server Error' });
 });
+
+// function to start the server
+const startServer = async () => {
+  try {
+    // connect to the mongo database and wait for it
+    await connect();
+    console.log(chalk.blue('Successfully connected to MongoDB.'));
+
+    // listen for connections only after DB connection is successful
+    app.listen(port, () => {
+      console.log(chalk.green(`Successfully started server running on port ${port}`));
+    });
+  } catch (error) {
+    console.error(chalk.red('Failed to connect to MongoDB:', error));
+    process.exit(1); // exit if DB connection fails on startup
+  }
+};
+
+// start the server
+startServer();

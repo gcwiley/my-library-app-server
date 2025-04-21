@@ -1,44 +1,64 @@
-import chalk from 'chalk';
-// import the book model
 import { Book } from '../models/book.js';
 
-// Route handler to create a new book - NEW BOOK
+// function to create a new book - NEW BOOK
 export const newBook = async (req, res) => {
-  const book = new Book(req.body);
-
+  const book = new Book({
+    title: req.body.title,
+    author: req.body.author,
+    isbn: req.body.isbn,
+    publicationDate: new Date(req.body.publicationDate),
+    pageCount: req.body.pageCount,
+    genre: req.body.genre,
+    favorite: req.body.favorite,
+    summary: req.body.summary,
+  });
   try {
-    // saves book to database
+    // saves new book to the database
     await book.save();
-    res.status(201).send(book);
+    res.status(201).json({ success: true, message: 'Successfully added book to database.' })
   } catch (error) {
-    res.status(400).send(error);
-    // logs any errors to the console
-    console.log(chalk.red(error));
+    console.error('Error creating book.', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating book.',
+      error: error.message,
+    });
   }
-};
+}
 
-// fetch all books from database - GET ALL BOOKS
+// function to fetch all books from database - GET ALL BOOKS
 export const getBooks = async (req, res) => {
   try {
     const books = await Book.find({});
 
     // if no books are found
-    if (!books) {
-      return res.status(404).send('No books found.');
+    if (books.length === 0) {
+      console.error('No books found.')
+      return res.status(404).json({ success: false, message: 'No books found.' });
     }
 
-    res.send(books);
+    // send the list of books back to the client
+    res.status(200).json(books);
   } catch (error) {
-    res.status(500).send('An error on the server occurred.');
+    console.error('Error fetching books:', error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching books.",
+      error: error.message,
+    });
   }
 };
+
+// function to fetch all paginated books from database - GET BOOK PAGINATION
+export const getPaginatedBooks = async (req, res) => {
+  // fix this!
+}
 
 // fetch individual book by Id
 export const getBookById = async (req, res) => {
   const _id = req.params.id;
 
   try {
-    // filters by _id
     const book = await Book.findById({ _id });
 
     // if no book by ID is found
@@ -53,7 +73,7 @@ export const getBookById = async (req, res) => {
 };
 
 // Update a book by Id
-export const updateBook = async (req, res) => {
+export const updateBookById = async (req, res) => {
   // get the id from params
   const _id = req.params.id;
   try {
@@ -70,12 +90,13 @@ export const updateBook = async (req, res) => {
     // send updated book back to client
     res.send(book);
   } catch (error) {
+    console.error()
     res.status(400).send(error);
   }
 };
 
 // Route hander to delete a book by Id
-export const deleteBook = async (req, res) => {
+export const deleteBookById = async (req, res) => {
   try {
     // finds and deletes a book that takes id into account
     const book = await Book.findByIdAndDelete({

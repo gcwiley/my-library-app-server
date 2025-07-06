@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { bcrypt } from 'bcrypt'; // import bcrypt for password hashing
+import bcrypt from 'bcrypt'; // import bcrypt for password hashing
 const { Schema } = mongoose;
 
 // create the user schema

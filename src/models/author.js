@@ -19,7 +19,6 @@ const authorSchema = new Schema({
   },
   dateOfDeath: {
     type: Date,
-    required: true,
   },
 });
 
@@ -28,11 +27,8 @@ authorSchema.virtual('name').get(function () {
   // to avoid errors in cases where an author does not have either a family name or first name
   // We want to make sure we hanldel the exception by returning an empty string for that case
   let fullName = '';
-  if (this.firstName && this.familyName) {
-    fullName = `${this.familyName}, ${this.firstName}`;
-  }
-  if (!this.firstName || !this.familyName) {
-    fullName = '';
+  if (this.firstName && this.lastName) {
+    fullName = `${this.lastName}, ${this.firstName}`;
   }
   return fullName;
 });

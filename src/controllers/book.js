@@ -2,20 +2,33 @@ import { Book } from '../models/book.js';
 
 // function to create a new book - NEW BOOK
 export const newBook = async (req, res) => {
+  const { title, author, isbn, publicationDate, pageCount, genre, favorite, summary, coverImageUrl } = req.body; 
+
+  // basic validation for required fields
+  if (!title || !author || !isbn || !publicationDate || !pageCount || !genre || !summary ) {
+    return res.status(400).json({
+      success: false,
+      message: 'Missing required fields. Please provide title, author, isbn, publication data, page count, genre, and summary.'
+    })
+  }
+
   const book = new Book({
-    title: req.body.title,
-    author: req.body.author,
-    isbn: req.body.isbn,
+    title,
+    author,
+    isbn,
     publicationDate: new Date(req.body.publicationDate),
-    pageCount: req.body.pageCount,
-    genre: req.body.genre,
-    favorite: req.body.favorite,
-    summary: req.body.summary,
+    pageCount,
+    genre,
+    favorite: favorite || false,
+    summary,
+    coverImageUrl,
   });
   try {
     // saves new book to the database
     await book.save();
-    res.status(201).json({ success: true, message: 'Successfully added book to database.' })
+    res
+      .status(201)
+      .json({ success: true, message: 'Successfully added book to database.' });
   } catch (error) {
     console.error('Error creating book.', error);
     res.status(500).json({
@@ -24,17 +37,18 @@ export const newBook = async (req, res) => {
       error: error.message,
     });
   }
-}
+};
 
-// function to fetch all books from database - GET ALL BOOKS
+// function to fetch all books from database - GET BOOKS
 export const getBooks = async (req, res) => {
   try {
     const books = await Book.find({});
 
     // if no books are found
     if (books.length === 0) {
-      console.error('No books found.')
-      return res.status(404).json({ success: false, message: 'No books found.' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'No books found.' });
     }
 
     // send the list of books back to the client
@@ -43,7 +57,7 @@ export const getBooks = async (req, res) => {
     console.error('Error fetching books:', error);
     res.status(500).json({
       success: false,
-      message: "Error fetching books.",
+      message: 'Error fetching books.',
       error: error.message,
     });
   }
@@ -51,28 +65,64 @@ export const getBooks = async (req, res) => {
 
 // function to fetch all paginated books from database - GET BOOK PAGINATION
 export const getPaginatedBooks = async (req, res) => {
-  // fix this!
-}
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
 
-// fetch individual book by Id
+  try {
+    const books = await Book.find({}).skip(skip).limit(limit);
+    const totalBooks = await Book.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      message: 'Paginated books fetched successfully.',
+      data: books,
+      totalPages: Math.ceil(totalBooks / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error('Error fetching paginated books:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching paginated books.',
+      error: error.message,
+    });
+  }
+};
+
+// function to fetch individual book by id - GET BOOK BY ID
 export const getBookById = async (req, res) => {
+  // find id of book from params.
   const _id = req.params.id;
 
   try {
+    // filter by _id
     const book = await Book.findById({ _id });
 
     // if no book by ID is found
     if (!book) {
-      return res.status(404).send('No book found');
+      return res
+        .status(404)
+        .json({ success: false, message: 'No book with that ID was found.' });
     }
 
-    res.send(book);
+    // send book back to client
+    res.status(200).json({
+      success: true,
+      message: 'Book retrieved successfully.',
+      data: book,
+    });
   } catch (error) {
-    res.status(500).send();
+    console.error('Error fetching book:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching book.',
+      error: error.message,
+    });
   }
 };
 
-// Update a book by Id
+// function to update a book by id - UPDATE BOOK BY ID
 export const updateBookById = async (req, res) => {
   // get the id from params
   const _id = req.params.id;
@@ -84,18 +134,26 @@ export const updateBookById = async (req, res) => {
 
     // if no book is found - send 404 error msg
     if (!book) {
-      return res.status(404).send('No book found.');
+      return res.status(404).send('No book with that ID was found.');
     }
 
     // send updated book back to client
-    res.send(book);
+    res.status(200).json({
+      success: true,
+      message: 'Book updated successfully.',
+      data: book,
+    });
   } catch (error) {
-    console.error()
-    res.status(400).send(error);
+    console.error('Error updating book:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating book.',
+      error: error.message,
+    });
   }
 };
 
-// Route hander to delete a book by Id
+// function to delete a book by id - DELETE BOOK BY ID
 export const deleteBookById = async (req, res) => {
   try {
     // finds and deletes a book that takes id into account
@@ -105,36 +163,95 @@ export const deleteBookById = async (req, res) => {
 
     // if no book is found
     if (!book) {
-      res.status(404).send('No book found.');
+      res.status(404).json({ success: false, message: 'No book with that ID was found.'});
     }
-    res.send(book);
+    res.status(200).json({ success: true, message: 'Book deleted successfully.'});
   } catch (error) {
-    res.status(500).send('An error on the server occurred.');
+    console.error('Error deleting book:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting book.',
+      error: error.message,
+    });
   }
 };
 
-// Route handler to count all books in database - BOOK COUNT
+// function to count all books in database - GET BOOK COUNT
 export const getBookCount = async (req, res) => {
   try {
-    // count all books within database
     const bookCount = await Book.countDocuments({});
 
-    res.send(bookCount);
+    // send book count to client
+    res
+      .status(200)
+      .json({ success: true, message: 'Book count', data: bookCount });
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error fetching book count.', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching book count.',
+      error: error.message,
+    });
   }
 };
 
-// Route handler to get the 5 most recently created books
+// function to get the 5 most recently created book - GET 5 RECENT BOOKS
 export const getRecentlyCreatedBooks = async (req, res) => {
   try {
-    const mostRecentBooks = await Book.find({}).sort({ createdAt: -1 }).limit(5);
+    const mostRecentBooks = await Book.find({})
+      .sort({ createdAt: -1 })
+      .limit(5);
 
-    if (!mostRecentBooks) {
-      return res.status(404).send();
+    // no recent books found
+    if (!mostRecentBooks || mostRecentBooks.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'No recent books found.' });
     }
-    res.send(mostRecentBooks);
+    res.status(200).json({
+      success: true,
+      message: 'Successfully fetched most recently created books.',
+      data: mostRecentBooks,
+    });
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error fetching recent books:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching recent books.',
+      error: error.message,
+    });
   }
 };
+
+// function to search books based on a query - SEARCH BOOKS
+export const searchBooks = async (req, res) => {
+  const searchQuery = req.query.q;
+
+  try {
+    const books = await Book.find({
+      $or: [
+        { title: { $reqex: searchQuery, $options: 'i' } },
+        { summary: { $reqex: searchQuery, $options: 'i' } },
+      ],
+    });
+
+    if (!books.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'No books matched your search.' });
+    }
+
+    res.status(200).json({ success: true, data: books });
+  } catch (error) {
+    console.error('Error searching books:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error searching books.',
+      error: error.message,
+    });
+  }
+};
+
+// function to upload a book cover image - UPLOAD BOOK COVER
+
+

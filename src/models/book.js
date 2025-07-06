@@ -13,15 +13,16 @@ const bookSchema = new Schema(
     },
     // author
     author: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Author',
       required: [true, 'Author is required.'],
       trim: true,
       index: true,
     },
-    // isbn - use dedicated ISBN validation library
+    // isbn - use a dedicated ISBN validation library
     isbn: {
       type: String,
-      required: [ture, 'ISBN is required.'],
+      required: [true, 'ISBN is required.'],
       validate: {
         validator: function (v) {
           return /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(v); // basic ISBN validation regex
@@ -38,15 +39,7 @@ const bookSchema = new Schema(
     pageCount: {
       type: Number,
       required: [true, 'A page count is required.'],
-      default: 0,
-      validate: {
-        validator: {
-          validate: function (value) {
-            return value > 0;
-          },
-          message: 'Page count be a non-negative number.', // more specific error
-        },
-      },
+      min: [1, 'Page count must be a positive number.'],
     },
     // genre
     genre: {
@@ -63,6 +56,12 @@ const bookSchema = new Schema(
     summary: {
       type: String,
       required: [true, 'A summary is required.'],
+      maxlength: [1000, 'Summary cannot exceed 1000 characters.'],
+    },
+    // book cover image URL
+    coverImageUrl: {
+      type: String,
+      // not required, as it might be added later or not exist for all books
     },
   },
   {
@@ -76,5 +75,4 @@ bookSchema.index({ createdAt: -1 }); // -1 indicates descending order is common 
 // create the book model
 const Book = mongoose.model('Book', bookSchema);
 
-// export the book model
 export { Book };

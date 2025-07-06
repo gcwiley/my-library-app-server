@@ -3,6 +3,7 @@ import process from 'process';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
 import admin from 'firebase-admin';
+import multer from 'multer'; // import multer
 
 // get the current file name
 const __filename = fileURLToPath(import.meta.url);
@@ -20,6 +21,17 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+// initialize firebase storage
+const bucket = admin.storage().bucket(); // get the default storage bucket
+
+// configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(), // store files in memory
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+});
+
 // import the routers
 import { bookRouter } from './routes/book.js';
 
@@ -33,7 +45,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // allows static access to the angular client side folder
-app.use(express.static(path.join(__dirname, '/dist/my-library-app-client/browser')));
+app.use(
+  express.static(path.join(__dirname, '/dist/my-library-app-client/browser'))
+);
 
 // automatically parse incoming JSON to an object so we can access it in our request handlers
 app.use(express.json());
@@ -41,6 +55,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // creates a logger middleware
 app.use(logger('dev'));
+
+// make the firebase storage bucket and upload middleware available to request handlers
+app.use((req, res, next) => {
+  req.bucket = bucket; // attach the firebase storage bucket
+  next();
+});
 
 // register the routers
 app.use(bookRouter);
@@ -52,7 +72,9 @@ app.use('*', (req, res) => {
     return res.status(404).json({ error: 'Not Found' }); // return 404 for API requests
   }
   // send back the angular index.html file
-  res.sendFile(path.join(__dirname, './dist/my-library-app-client/browser', 'index.html'));
+  res.sendFile(
+    path.join(__dirname, './dist/my-library-app-client/browser', 'index.html')
+  );
 });
 
 // global error handling middleware
@@ -70,7 +92,9 @@ const startServer = async () => {
 
     // listen for connections only after DB connection is successful
     app.listen(port, () => {
-      console.log(chalk.green(`Successfully started server running on port ${port}`));
+      console.log(
+        chalk.green(`Successfully started server running on port ${port}`)
+      );
     });
   } catch (error) {
     console.error(chalk.red('Failed to connect to MongoDB:', error));
@@ -80,3 +104,6 @@ const startServer = async () => {
 
 // start the server
 startServer();
+
+// export upload middleware for use in routes
+export { upload };
